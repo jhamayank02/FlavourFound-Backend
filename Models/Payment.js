@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const connectDB = require('../utils/connectDB');
 
-mongoose.connect('mongodb://127.0.0.1:27017/FlavourFound');
+connectDB();
 
 const paymentSchema = mongoose.Schema({
     payment_id: {

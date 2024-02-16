@@ -11,7 +11,7 @@ const contactRoutes = require('./Routes/contact');
 const globalErrorHandler = require('./controllers/error');
 
 const app = express();
-const PORT = 80;
+const PORT = process.env.PORT || 80;
 
 app.use(cors());
 app.use(express.json());
