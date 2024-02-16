@@ -32,7 +32,8 @@ let upload = multer({
         }
     },
     onError: (err, next)=>{
-        next(err);
+        console.log(err.message);
+        // next(err);
     }
 });
 
