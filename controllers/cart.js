@@ -43,7 +43,7 @@ const addToCart = asyncErrorHandler(async (req,res)=>{
         food_item: food_item.name,
         item_quantity: 1,
         item_price: Number(food_item.price),
-        food_image: food_item.images[0],
+        food_image: food_item.images[0].img_url,
         item_total_amount: Number(food_item.price)
        });
     }
