@@ -3,6 +3,7 @@ const orderModel = require('../Models/Order');
 const userModel = require('../Models/User');
 const paymentModel = require('../Models/Payment');
 const asyncErrorHandler = require('../utils/asyncErrorHandler');
+const cloudinary = require('cloudinary').v2;
 
 const admins = asyncErrorHandler(async (req, res)=>{
     const allAdmins = await userModel.find({admin_rights: true});
@@ -33,7 +34,10 @@ const addFood = asyncErrorHandler(async (req, res)=>{
 
     let images = [];
     req.files.forEach(img => {
-        images.push(img.originalname);
+        images.push({
+            img_id: img.filename,
+            img_url: img.path
+        });
     });
 
     const addedFoodItem = await foodModel.create({
@@ -57,29 +61,24 @@ const addFood = asyncErrorHandler(async (req, res)=>{
 const deleteFood = asyncErrorHandler(async (req,res)=>{
     const id = req.body.id;
 
-    foodModel.findOneAndDelete({_id: id})
-        .then(deletedItem=>{
+    const deletedItem = await foodModel.findOneAndDelete({_id: id});
+    // Deleting the images
+    const images = deletedItem.images;
+    // images.forEach(img_name=>{
+    //     fs.unlink('./public/food-items/images/' + img_name, (err)=>{
+    //         // throw err;
+    //     })
+    // })
+    
+    images.forEach(async (img)=>{
+        await cloudinary.uploader.destroy(img.img_id);
+    })
 
-            // TODO -> Handle this 
-            if(null){
-                res.send({});
-            }
-            
-            // Deleting the images
-            const images = deletedItem.images;
-            images.forEach(img_name=>{
-                fs.unlink('./public/food-items/images/' + img_name, (err)=>{
-                    // throw err;
-                })
-            })
-            
-            // console.log(express.static);
-
-            res.send(deletedItem);
-        })
-        .catch(err=>{
-            res.send(err);
-        })
+    res.status(200).json({
+        status: 200,
+        msg: "The food item has been deleted successfully",
+        deletedItem: deletedItem
+    });
 })
 
 const allOrders = asyncErrorHandler(async (req,res)=>{
