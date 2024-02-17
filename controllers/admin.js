@@ -30,7 +30,7 @@ const addFood = asyncErrorHandler(async (req, res)=>{
     const description = req.body.description;
     const stock = req.body.stock;
     const ingredients = req.body.ingredients;
-    const category = req.body.category;
+    const category = req.body.category.toLowerCase();
 
     let images = [];
     req.files.forEach(img => {
