@@ -12,7 +12,7 @@ const asyncErrorHandler = require('../utils/asyncErrorHandler');
 const paymentPublishableKey = asyncErrorHandler(async (req, res)=>{
     res.status(200).json({
         status: 200,
-        publisable_key: process.env.STRIPE_PUBLISHABLE_KEY
+        publishable_key: process.env.STRIPE_PUBLISHABLE_KEY
     })    
 })
 

@@ -41,13 +41,12 @@ const filterFoods = asyncErrorHandler(async (req, res)=>{
         findCondition = {};
     }
     else{
-        findCondition = {
-            category: category.toLowerCase(),
-            price: {$lte: Number(max_price)}
-        };
+        findCondition = { $and: [
+            {category: category.toLowerCase()},
+            {price: {$lte: Number(max_price)}}
+        ]};
     }
 
-    console.log(findCondition)
     const foodItems = await foodModel.find(findCondition);
     
     res.status(200).json({
