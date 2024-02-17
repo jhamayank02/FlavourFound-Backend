@@ -9,6 +9,13 @@ const asyncErrorHandler = require('../utils/asyncErrorHandler');
 // Indian test card
 // 4000003560000008 
 
+const paymentPublishableKey = asyncErrorHandler(async (req, res)=>{
+    res.status(200).json({
+        status: 200,
+        publisable_key: process.env.STRIPE_PUBLISHABLE_KEY
+    })    
+})
+
 const paymentSecret = asyncErrorHandler(async (req, res)=>{
     const {line, postal_code, city, state, country, customer_id} = req.body;
 
@@ -74,4 +81,4 @@ const paymentStatus = asyncErrorHandler(async (req, res)=>{
     }
 })
 
-module.exports = {paymentSecret, paymentStatus};
+module.exports = {paymentSecret, paymentStatus, paymentPublishableKey};

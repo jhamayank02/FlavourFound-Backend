@@ -21,7 +21,7 @@ const FoodItemSchema = mongoose.Schema({
         required: [true, 'Description is a required field!']
     },
     price: {
-        type: String,
+        type: Number,
         required: [true, 'Price is a required field!']
     },
     images: {

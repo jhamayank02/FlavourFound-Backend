@@ -29,7 +29,7 @@ const filterFoods = asyncErrorHandler(async (req, res)=>{
 
     if(category === '' && max_price !== ''){
         findCondition = {
-            price: {$lte: Number(max_price), $gte: 0}
+            price: {$gte: 0, $lte: Number(max_price)}
         };
     }
     else if(max_price === '' && category !== ''){
@@ -43,11 +43,12 @@ const filterFoods = asyncErrorHandler(async (req, res)=>{
     else{
         findCondition = {
             category: category.toLowerCase(),
-            price: {$lte: Number(max_price), $gte: 0}
+            price: {$gte: 0, $lte: Number(max_price)}
         };
     }
 
-    const foodItems = await foodModel.find(findCondition);
+    console.log(findCondition)
+    const foodItems = await foodModel.find({price: {$lte: 60}});
     
     res.status(200).json({
         status: 200,
