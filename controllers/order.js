@@ -95,6 +95,8 @@ const createOrder = async (customer_id, shipping_address)=>{
         delivered_by: delivered_by_time 
     })
 
+    // TODO ==> Adjust the food item's stock 
+
     // Make the customer cart empty after placing the order
     const clear_cart = await cartModel.updateOne({customer_id: customer_id}, {
         cart_items: [],
