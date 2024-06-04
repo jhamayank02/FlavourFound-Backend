@@ -1,14 +1,15 @@
 const userModel = require('../Models/User');
 const cartModel = require('../Models/Cart');
 const orderModel = require('../Models/Order');
+const foodModel = require('../Models/FoodItem');
 const asyncErrorHandler = require('../utils/asyncErrorHandler');
 
 const placeOrder = asyncErrorHandler(async (req, res)=>{
     const customer_id = req.body.customer_id;
     const shipping_address = req.body.shipping_address;
-
+    
     const customer = await userModel.findOne({_id: customer_id});
-
+    
     const cart_details = await cartModel.findOne({customer_id: customer_id});
 
     // Delivered in 2 hours
@@ -68,8 +69,6 @@ const orderDelivered = asyncErrorHandler(async (req,res)=>{
        delivered_on: Date.now()
     }, {new: true})
 
-    console.log("HERE", order_fulfilled)
-
     res.status(200).json({
         status: 200,
         msg: "Your order has been delivered successfully",
@@ -83,7 +82,7 @@ const createOrder = async (customer_id, shipping_address)=>{
 
     // Delivered in 2 hours
     const curr_time = new Date();
-    const delivered_by_time = curr_time.getHours() + 2;
+    const delivered_by_time = new Date(curr_time.getHours() + 2);
     
     const new_order = await orderModel.create({
         customer_id: customer._id,
@@ -95,7 +94,11 @@ const createOrder = async (customer_id, shipping_address)=>{
         delivered_by: delivered_by_time 
     })
 
-    // TODO ==> Adjust the food item's stock 
+    // Adjust the food item's stock
+    cart_details.cart_items.forEach(async (item)=>{
+        const foodItem = await foodModel.findById(item.food_id);
+        await foodModel.updateOne({_id: item.food_id}, {stock: foodItem.stock-Number(item.item_quantity)});
+    }) 
 
     // Make the customer cart empty after placing the order
     const clear_cart = await cartModel.updateOne({customer_id: customer_id}, {

@@ -34,14 +34,14 @@ const FoodItemSchema = mongoose.Schema({
         default: []
     },
     stock: {
-        type: String,
+        type: Number,
         required: [true, 'Stock is a required field!']
     },
     averageRating: {
         type: Number,
         default: 0
     }
-})
+}, {timestamps: true})
 
 const FoodModel = mongoose.model('Food Items', FoodItemSchema);
 

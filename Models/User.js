@@ -12,7 +12,8 @@ const userSchema = mongoose.Schema({
         unique: true
     },
     password: {
-        type: String
+        type: String,
+        select: false
     },
     contact_no: {
         type: String,
@@ -35,7 +36,7 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false
     }
-})
+}, {timestamps: true})
 
 userSchema.plugin(passportLocalMongoose, {
     usernameField: 'email'

@@ -3,7 +3,7 @@ const multer = require('multer');
 const fs = require('fs');
 
 const asyncErrorHandler = require('../utils/asyncErrorHandler');
-const { admins, addFood, updateFood, deleteFood, allOrders, pendingOrders, completedOrders, businessSummary, isAdmin, orderDetails, userDetails, updateOrder, users, updateUser, payments } = require('../controllers/admin');
+const { admins, addFood, updateFood, deleteFood, allOrders, pendingOrders, completedOrders, businessSummary, isAdmin, orderDetails, userDetails, updateOrder, users, updateUser, payments, salesAnalysis } = require('../controllers/admin');
 
 // const {isLoggedIn} = require('../controllers/auth');
 
@@ -65,9 +65,9 @@ router.post('/pending-orders', isAdmin, pendingOrders)
 
 router.post('/completed-orders', isAdmin, completedOrders)
 
-router.post('/business-summary', isAdmin, businessSummary)
+router.get('/business-summary', isAdmin, businessSummary)
 
-// router.get('/sales-analysis', salesAnalysis)
+router.get('/sales-analysis', isAdmin, salesAnalysis)
 
 router.post('/order-details', isAdmin, orderDetails)
 

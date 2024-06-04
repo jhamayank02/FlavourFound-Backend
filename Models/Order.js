@@ -26,7 +26,7 @@ const orderSchema = mongoose.Schema({
         required: [true, 'Shipping address is a required field']
     },
     total_amount: {
-        type: String,
+        type: mongoose.Schema.Types.Number,
         required: [true, 'Total amount is a required field']
     },
     ordered_items: {
@@ -43,7 +43,7 @@ const orderSchema = mongoose.Schema({
     delivered_on: {
         type: Date
     }
-})
+}, {timestamps: true})
 
 const orderModel = mongoose.model("Orders", orderSchema);
 

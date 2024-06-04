@@ -82,7 +82,7 @@ const deleteFood = asyncErrorHandler(async (req,res)=>{
 })
 
 const allOrders = asyncErrorHandler(async (req,res)=>{
-    const all_orders = await orderModel.find({});
+    const all_orders = await orderModel.find({}).sort({createdAt: -1});
 
     res.status(200).json({
         status: 200,
@@ -91,7 +91,7 @@ const allOrders = asyncErrorHandler(async (req,res)=>{
 })
 
 const pendingOrders = asyncErrorHandler(async (req,res)=>{
-    const pending_orders = await orderModel.find({delivered: false});
+    const pending_orders = await orderModel.find({delivered: false}).sort({createdAt: -1});
 
     res.status(200).json({
         status: 200,
@@ -100,7 +100,7 @@ const pendingOrders = asyncErrorHandler(async (req,res)=>{
 })
 
 const completedOrders = asyncErrorHandler(async (req,res)=>{
-    const completed_orders = await orderModel.find({delivered: true});
+    const completed_orders = await orderModel.find({delivered: true}).sort({createdAt: -1});
 
     res.status(200).json({
         status: 200,
@@ -146,30 +146,58 @@ const businessSummary = asyncErrorHandler(async (req,res)=>{
     });
 })
 
-// CATCH ERROR
-// const salesAnalysis = asyncErrorHandler(async (req,res)=>{
-//     const analysis = {};
-    
-//     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-//     const monthWiseData = {'Jan': 0, 'Feb': 0, 'Mar': 0, 'Apr': 0, 'May': 0, 'Jun': 0, 'Jul': 0, 'Aug': 0, 'Sep': 0, 'Oct': 0, 'Nov': 0, 'Dec': 0};
-//     const today_date = new Date();
+const salesAnalysis = asyncErrorHandler(async (req,res)=>{
 
-//     for(let i=0; i<12; i++){
+    const salesResult = await orderModel.aggregate([
+        // {
+        //     $match: {
+        //         'createdDate': {
+        //             $gte: new Date('$createdAt'),
+        //             $lte: new Date()
+        //         }
+        //     }
+        // },
+        {
+            $project: {
+                total_amount: '$total_amount',
+                month: {'$dateToString': {format: '%m', date: '$createdAt'}}
+            }
+        },
+        {
+            $group: {
+                _id: '$month',
+                total_sales_amount: {$sum: '$total_amount'},
+                total_sales_count: {$sum: 1}
+            }
+        }
+    ])
 
-//         const salesCount = await orderModel.find({
-//             ordered_at: {
-//                 // $gte: new Date(today_date -  (i+1)*(86400*31*1000)),
-//                 // $lte: new Date(today_date -  (i)*(86400*31*1000))
-//                 $gte: new Date(`1 ${i} ${today_date.getFullYear()}`),
-//                 $lte: new Date(today_date -  (i)*(86400*31*1000))
-//             }
-//         }).count();
 
-//         monthWiseData[months[i]] = salesCount;
-//     }
+    const favouriteFoodsResult = await orderModel.aggregate([
+        {$unwind: '$ordered_items'},
+        {
+            $project: {
+                items: '$ordered_items',
+            }
+        },
+        {
+            $group: {
+                _id: '$items.food_id',
+                item_sold: {$sum: '$items.item_quantity'},
+                item_name: {$last: '$items.food_item'}
+            }
+        },
+        {$sort: { item_sold: -1}},
+        {$limit: 5}
+    ])
 
-//     res.json(monthWiseData);
-// })
+    res.status(200).json({
+        status:200,
+        salesResult,
+        favouriteFoodsResult
+    });
+
+})
 
 const orderDetails = asyncErrorHandler(async (req,res)=>{
     const order_id = req.body.order_id;
@@ -248,10 +276,7 @@ const updateFood = asyncErrorHandler(async (req,res)=>{
 })
 
 const isAdmin = asyncErrorHandler(async (req, res, next)=>{
-    const user_id = req.body.user_id;
-    const user_details = await userModel.findOne({_id: user_id});
-
-    if(user_details !== null && user_details.admin_rights){
+    if(req.user.admin_rights){
         next();
     }
     else{
@@ -271,4 +296,4 @@ const payments = asyncErrorHandler(async (req, res)=>{
     });
 })
 
-module.exports = {admins, users, addFood, updateFood, deleteFood, allOrders, pendingOrders, completedOrders, businessSummary, isAdmin, orderDetails, userDetails, updateOrder, updateUser, payments};
+module.exports = {admins, users, addFood, updateFood, deleteFood, allOrders, pendingOrders, completedOrders, businessSummary, isAdmin, orderDetails, userDetails, updateOrder, updateUser, payments, salesAnalysis};

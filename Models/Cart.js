@@ -20,7 +20,7 @@ const cartSchema = mongoose.Schema({
         type: mongoose.Schema.Types.Number,
         default: 0
     }
-})
+}, {timestamps: true})
 
 const cartModel = mongoose.model("Cart", cartSchema);
 

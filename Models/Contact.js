@@ -21,7 +21,7 @@ const contactSchema = mongoose.Schema({
         type: String,
         required: [true, 'Query is a required field!']
     }
-})
+}, {timestamps: true})
 
 const contactModel = mongoose.model("Contact", contactSchema);
 

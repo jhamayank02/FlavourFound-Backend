@@ -28,7 +28,7 @@ const paymentSchema = mongoose.Schema({
         type: String,
         required: [true, 'Status is a required field']
     }
-})
+}, {timestamps: true})
 
 const paymentModel = mongoose.model('Payments', paymentSchema);
 
