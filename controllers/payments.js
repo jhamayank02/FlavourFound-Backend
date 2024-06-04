@@ -66,14 +66,9 @@ const paymentStatus = asyncErrorHandler(async (req, res)=>{
             status: paymentStatusData.status,
             order_id: createdOrder._id
         })
-
-
-        // res.status(200).json({
-        //     status: 200,
-        //     msg: 'Payment successful'
-        // });
-        res.redirect('http://localhost:3000/#/payment-success');
-        // res.redirect('https://jhamayank02.github.io/FlavourFound/#/payment-success');
+        
+        // res.redirect('http://localhost:3000/#/payment-success');
+        res.redirect('https://jhamayank02.github.io/FlavourFound/#/payment-success');
     }
     else{
         res.redirect('http://localhost:3000/#/payment-failed');
