@@ -97,7 +97,7 @@ const createOrder = async (customer_id, shipping_address)=>{
     // Adjust the food item's stock
     cart_details.cart_items.forEach(async (item)=>{
         const foodItem = await foodModel.findById(item.food_id);
-        await foodModel.updateOne({_id: item.food_id}, {stock: foodItem.stock-Number(item.item_quantity)});
+        await foodModel.updateOne({_id: item.food_id}, {stock: Number(foodItem.stock)-Number(item.item_quantity)});
     }) 
 
     // Make the customer cart empty after placing the order
