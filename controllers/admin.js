@@ -136,7 +136,7 @@ const businessSummary = asyncErrorHandler(async (req,res)=>{
         ordered_at: {
             $gte: new Date(today_date - 86400*31*1000)
         }
-    }).count();
+    }).countDocuments();
 
     summary.sales_this_month = sales_this_month;
 
